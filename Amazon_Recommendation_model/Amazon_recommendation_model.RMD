@@ -1,0 +1,54 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+
+# Objective : Provide recommendation model based on Amazon fresh Dataset 
+# DataSource: https://www.superdatascience.com/pages/machine-learning 
+
+# STEP 1:
+
+# Data Preprocessing
+# install.packages('arules')
+library(arules)
+
+#Importing the dataset using read.csv
+dataset = read.csv('C:/Users/Swapnil/Documents/Data Science Udemy/Machine Learning A-Z Template Folder/Part 5 - Association Rule Learning/Section 28 - Apriori/Section 28 - Apriori/R/Market_Basket_Optimisation.csv', header= FALSE)
+
+## Since Apriori model accepts list, hence converting the dataset into transactions
+dataset = read.transactions('C:/Users/Swapnil/Documents/Data Science Udemy/Machine Learning A-Z Template Folder/Part 5 - Association Rule Learning/Section 28 - Apriori/Section 28 - Apriori/R/Market_Basket_Optimisation.csv', sep = ',', rm.duplicates = TRUE)
+
+# To have a better understanding and insight of dataset, let us see the summary
+summary(dataset)
+
+## Ploting the top 10 selling items within the store
+itemFrequencyPlot(dataset, topN=10)
+
+## Training Apriori
+
+rules = apriori(data = dataset,parameter = list(support=0.005, confidence=0.2))
+## The main aim is to set a appropriate support and confidence
+# support is calculated as = (Min number of items purchased a day)*no.of days/total items sold
+## Support changes according to the business problem, hence in this case I am going with those items which are purchased atleast 3 times a day
+## Confidence (default = 0.8), this is a try and error method and for this model, 0.2 works the best
+
+##Visulization of the output
+
+inspect(sort(rules, by ='lift')[1:10])
+## Selecting the top 10 recommendations with highest lif
+
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
